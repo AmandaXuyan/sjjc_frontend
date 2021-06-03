@@ -1,0 +1,1 @@
+:root{--body-sidespan:1pt}body,html{width:calc(100% - var(--body-sidespan)*2);min-width:100pt!important;height:calc(100% - var(--body-sidespan)*2);min-height:100pt!important;display:block;margin:var(--body-sidespan)}#app{width:100%;height:100%}
