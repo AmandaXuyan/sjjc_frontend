@@ -125,35 +125,17 @@
       </div>
     </div>
 
-    <div id="detail" style="position: absolute; right: 35pt; top: 20pt;z-index: 3" v-show="detailVisible">
-      <el-card shadow="always">
-        <div slot="header" class="clearfix">
-          <span>详细信息</span>
-          <Icon style="float: right; padding: 3px 0" title="关闭" class="el-icon-close" @click="closeDetail"/>
-        </div>
-        <el-collapse v-model="activeNames" @change="handleChange" >
-          <el-collapse-item name="1">
-            <template slot="title">
-              一致性 Consistency<i class="header-icon el-icon-info"></i>
-            </template>
-            <div>与现实生活一致：与现实生活的流程保持一致；</div>
-            <div>在界面中一致：所有的元素和结构需保持一致。</div>
-          </el-collapse-item>
-          <el-collapse-item title="反馈 Feedback" name="2">
-            <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-            <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-          </el-collapse-item>
-          <el-collapse-item title="效率 Efficiency" name="3">
-            <div>简化流程：设计简洁直观的操作流程；</div>
-            <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-            <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
-          </el-collapse-item>
-          <el-collapse-item title="可控 Controllability" name="4">
-            <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-            <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
-          </el-collapse-item>
-        </el-collapse>
-      </el-card>
+    <div id="detail" style="position: absolute; right: 40pt; top: 10pt;z-index: 3" v-show="detailVisible">
+      <el-popover
+              placement="bottom"
+              width="350"
+              trigger="click">
+        <el-table :data="gridData">
+          <el-table-column width="100" property="date" label="公司信息"></el-table-column>
+          <el-table-column width="200" property="name" label="详情"></el-table-column>
+        </el-table>
+        <el-button slot="reference" @click="visible = !visible">详细信息</el-button>
+      </el-popover>
     </div>
 
   </div>
@@ -318,18 +300,18 @@
       // 节点的样式
       this.$cy
         .style()
-        .selector('.classes-A')
-        .css({'background-color': '#6FB1FC', 'content': 'data(name)', 'border-color': '#6FB1FC', 'border-width': "5px"})
+        .selector('.Company')
+        .css({'background-color': '#6FB1FC','label':'data(safety)' ,'content': 'data(orgName)', 'border-color': '#6FB1FC', 'border-width': "5px"})
         // .style({'background-color': '#FF0000', 'border-color': '#FF0000', 'border-width': "1px",})
-        .selector('.classes-B')
+        .selector('.DGJ')
         .css({'background-color': '#F5A45D', 'content': 'data(name)', 'border-color': '#F5A45D', 'border-width': "5px"})
         // // .style({'background-color': '#00FF00', 'border-color': '#00FF00', 'border-width': "1px",})
-        // .selector('.classes-C')
-        // // .style({'background-color': '#0000FF', 'border-color': '#0000FF', 'border-width': "1px",})
+        .selector('.one')
+        .style({'background-color': '#FFB6C1', 'border-color': '#FFB6C1', 'border-width': "8px",})
         // .css({'background-color': '#b88cea', 'content': 'data(name)','border-color':'#b88cea','border-width':"5px"})
         // .selector('.classes-D')
         // .css({'background-color': '#83fd84', 'content': 'data(name)','border-color':'#83fd84','border-width':"5px"})
-        .selector('.relationA')
+        .selector('.HoldingRelation')
         .css({
           'target-arrow-color': '#999999', /*箭头颜色*/
           'curve-style': 'bezier', /*线条样式曲线*/
@@ -399,6 +381,29 @@
         loading: false,
         activeNames: ['1'],//折叠面板
 
+        gridData: [{
+          date: '公司全称',
+          name: '',
+
+        }, {
+          date: '类型',
+          name: '',
+
+        }, {
+          date: '员工数',
+          name: '',
+
+        }, {
+          date: '风险值',
+          name: '',
+
+        },
+          {
+            date: '股票代码',
+            name: '',
+
+          }],
+        visible: false,
         // deleted_array:this.$cy.collection(),
       };
     },
@@ -409,72 +414,73 @@
       },
 
       handleChange(val) {
+        // eslint-disable-next-line no-console
         console.log(val);
       },
       /**
        * 搜索后，刷新布局展示知识图谱
        * TODO:测试findRelatedCompaniesAPI
        **/
-      findRelatedCompanies() {
+      async findRelatedCompanies() {
+        // eslint-disable-next-line no-console
         console.log("----selectedValue-----")
+        // eslint-disable-next-line no-console
         console.log(this.selectedValue)
         if (this.selectedValue != "") {
           this.searchVisible = false;
-          const res = findRelatedCompaniesAPI(this.selectedValue);
-          console.log("findRelatedCompaniesAPI:res----"+res)
-          this.$cy.startBatch();
-          this.$cy.batch(() => {
-            this.$cy.elements().map(function (ele) {
-              ele.remove();
+          const res = await findRelatedCompaniesAPI(this.selectedValue);
+          // eslint-disable-next-line no-console
+          console.log("findRelatedCompaniesAPI:res----")
+          // eslint-disable-next-line no-console
+          console.log(res)
+          if(res==false){
+            this.$message({
+              showClose: true,
+              message: '该公司没有下级股权信息哦，换个公司试试吧',
+              type: 'error'
             });
-          });
-          this.$cy.endBatch();
-          this.addEles(res);
+          }else{
+            this.$cy.startBatch();
+            this.$cy.batch(() => {
+              this.$cy.elements().map(function (ele) {
+                ele.remove();
+              });
+            });
+            this.$cy.endBatch();
+            this.$cy.add(res);
+            this.refresh({name: 'circle'});
+          }
         } else {
           this.$message({
-
             showClose: true,
             message: '请输入正确的公司名称',
             type: 'error'
           });
         }
+        this.detailVisible=false;
 
       },
       /**
-       * TODO:搜索模糊查询，接口没测
+       * 搜索模糊查询，接口已测
        **/
-      remoteMethod(query) {
+      async remoteMethod(query) {
         // 如果用户输入内容了，就发请求拿数据，远程搜索模糊查询
         if (query !== "") {
           this.loading = true; // 开始拿数据喽
           // 这里模拟发请求，res就当成发请求返回来的数据吧。
-          const res = getNameListAPI(query);
-          console.log(res)
-          // let res = [
-          //   {
-          //     id: 1,
-          //     name: "孙悟空",
-          //   },
-          //   {
-          //     id: 2,
-          //     name: "孙尚香",
-          //   },
-          //   {
-          //     id: 3,
-          //     name: "沙和尚",
-          //   },
-          //   {
-          //     id: 4,
-          //     name: "沙师弟",
-          //   },
-          // ];
-          this.loading = false // 拿到数据
-          this.options = res.filter((item) => {
-            return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
-          })
-        } else {
-          this.options = [];
-        }
+          const res = await getNameListAPI(query);
+          if(res){
+            // eslint-disable-next-line no-console
+            console.log(res.result);
+            this.loading = false // 拿到数据
+            this.options = res.filter((item) => {
+              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+            })
+          } else {
+            this.options = [];
+          }
+          }
+        this.detailVisible=false;
       },
 
       //增加节点或边
@@ -504,44 +510,84 @@
        * TODO:findUpCompaniesAPI接口没测
        * @param eleName 某元素name
        **/
-      findUpCompany(eleName) {
+      async findUpCompany(eleName) {
+        if (eleName.indexOf(" ") != -1){
+          eleName=eleName.split(" ")[0]
+        }
+        // eslint-disable-next-line no-console
         console.log("---selectEle---")
+        // eslint-disable-next-line no-console
         console.log(eleName)
-        const res = findUpCompaniesAPI(eleName);
-        this.$cy.startBatch();
-        this.$cy.batch(() => {
-          //TODO:根据返回的数据决定要不要将原画布中元素删除
-          this.$cy.elements().map(function (ele) {
-            ele.remove();
+        const res = await findUpCompaniesAPI(eleName);
+        if(res==false){
+          this.$message({
+            showClose: true,
+            message: '该公司没有上级公司喽',
+            type: 'error'
           });
-          this.addEles(res);
-        });
-        this.$cy.endBatch();
+        }
+        else{
+          this.$cy.startBatch();
+          this.$cy.batch(() => {
+            //TODO:根据返回的数据决定要不要将原画布中元素删除
+            this.$cy.elements().map(function (ele) {
+              ele.remove();
+            });
+            this.$cy.add(res);
+            this.refresh({name: 'breadthfirst'})
+          });
+          this.$cy.endBatch();
+        }
+        this.detailVisible=false;
       },
 
       /**
        * TODO：显示某公司详细信息!!!findDetailAPI
        * @param ele 某元素name
        **/
-      findDetail(eleName) {
-        const res_detail = findDetailAPI(eleName);
-        const res_chart=findRiskChartAPI(eleName);
-        console.log("---selectEle---")
-        console.log(eleName)
-        this.$cy.startBatch();
-        this.$cy.batch(() => {
-          this.$cy.elements().map(function (ele) {
-            ele.remove();
-          });
-        });
-        this.$cy.endBatch();
-        this.addEles(res_chart);
-        //TODO：详细信息的展示
-        this.refresh({name: 'breadthfirst'})
-        // this.refresh({name: 'cola'})
-        this.detailVisible=true;
+      async findDetail(eleName) {
+        if (eleName.indexOf(" ") != -1){
+          eleName=eleName.split(" ")[0]
+        }
+        const res_detail = await findDetailAPI(eleName);
+        const res_chart= await findRiskChartAPI(eleName);
+        // eslint-disable-next-line no-console
+        console.log("---res_detail---")
+        // eslint-disable-next-line no-console
         console.log(res_detail)
+        // eslint-disable-next-line no-console
+        console.log("---res_chart---")
+        // eslint-disable-next-line no-console
+        console.log(res_chart)
 
+        if(res_chart==false){
+          this.$message({
+            showClose: true,
+            message: '对不起，暂时还没有更详细的信息了',
+            type: 'error'
+          });
+        }else{
+
+          this.$cy.startBatch();
+          this.$cy.batch(() => {
+            this.$cy.elements().map(function (ele) {
+              ele.remove();
+            });
+          });
+          this.$cy.endBatch();
+          this.$cy.add(res_chart);
+          //TODO：详细信息的展示
+          this.refresh({name: 'breadthfirst'})
+          // this.refresh({name: 'cola'})
+          this.gridData[0].name=res_detail.name.split(" ")[0]
+          this.gridData[1].name=res_detail.typeName
+          this.gridData[2].name=res_detail.staffNum
+          this.gridData[3].name=res_detail.safety
+          this.gridData[4].name=res_detail.stockId
+        }
+        // eslint-disable-next-line no-console
+        console.log(res_detail.stockId)
+        this.detailVisible=true;
 
       },
       modify() {

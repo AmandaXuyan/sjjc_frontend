@@ -16,6 +16,7 @@ const api = {
  */
 
 export function findRelatedCompaniesAPI(searchName) {
+  // eslint-disable-next-line no-console
   console.log("findRelatedCompaniesAPI:searchName----"+searchName)
   return axios({
     url: `${api.chartPre}/findRelatedCompanies/${searchName}`,
@@ -34,6 +35,7 @@ export function findRelatedCompaniesAPI(searchName) {
  * TODO:最终返回多少数据还要讨论一下
  */
 export function findUpCompaniesAPI(searchName) {
+  // eslint-disable-next-line no-console
   console.log("findUpCompaniesAPI:searchName----"+searchName)
   return axios({
     url: `${api.chartPre}/findUpCompanies/${searchName}`,
@@ -52,6 +54,7 @@ export function findUpCompaniesAPI(searchName) {
  ]
  */
 export function findRiskChartAPI(companyName) {
+  // eslint-disable-next-line no-console
   console.log("findRiskChartAPI:companyName----"+companyName)
   return axios({
     url: `${api.chartPre}/findRiskChart/${companyName}`,
@@ -66,6 +69,7 @@ export function findRiskChartAPI(companyName) {
  * {id:'',name:'',introduction:'',......,}
  */
 export function findDetailAPI(companyName) {
+  // eslint-disable-next-line no-console
   console.log("findDetailAPI:companyName----"+companyName)
   return axios({
     url: `${api.chartPre}/findDetail/${companyName}`,
@@ -81,7 +85,6 @@ export function findDetailAPI(companyName) {
     {id: "",name: "",},]
  */
 export function getNameListAPI(keyWord) {
-  console.log("getNameListAPI:keyWord----"+keyWord)
   return axios({
     url: `${api.chartPre}/getNameList/${keyWord}`,
     method: 'GET',

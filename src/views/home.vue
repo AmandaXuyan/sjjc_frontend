@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <CJS ref="ref_CJS"></CJS>
+    <CJS ref="ref_CJS" style="z-index: 5"></CJS>
   </div>
 
 </template>
@@ -27,35 +27,22 @@
       addAll() {
 
         this.$refs['ref_CJS'].addEles([
-          {group: 'nodes', data: {'id': '李俊杰', 'name': '李俊杰',}, classes: 'classes-A', position: {x: 200, y: 50}},
-          {group: 'nodes', data: {'id': '野猪', 'name': '猪🐖',}, classes: 'classes-A', position: {x: 500, y: 50}},
-          {
-            group: 'nodes',
-            data: {'id': '南京大学', 'name': '南京大学',},
-            classes: 'classes-A',
-            display: 'hide',
-            position: {x: 200, y: 200}
-          },
-          {group: 'nodes', data: {'id': '肥肉', 'name': '肥肉',}, classes: 'classes-A', position: {x: 500, y: 150}},
-          {group: 'nodes', data: {'id': '吃饭', 'name': '吃饭',}, classes: 'classes-B', position: {x: 100, y: 100}},
-          {
-            group: 'nodes',
-            data: {'id': '南大卷王', 'name': '南大卷王',},
-            classes: 'classes-A',
-            display: 'hide',
-            position: {x: 250, y: 100}
-          },
-          {group: 'nodes', data: {'id': '打呼噜', 'name': '打呼噜',}, classes: 'classes-B', position: {x: 300, y: 200}},
-          {group: 'edges', data: {id: 'e0', name: '是', source: '李俊杰', target: '野猪'}, classes: 'relationB'},
-          {group: 'edges', data: {id: 'e1', name: '是', source: '李俊杰', target: '南大卷王'}, classes: 'relationB'},
-          {group: 'edges', data: {id: 'e2', name: '拥有', source: '野猪', target: '肥肉'}, classes: 'relationA'},
-          {group: 'edges', data: {id: 'e3', name: '拥有', source: '李俊杰', target: '肥肉'}, classes: 'relationA'},
-          {group: 'edges', data: {id: 'e4', name: '喜欢', source: '野猪', target: '吃饭'}, classes: 'relationA'},
-          {group: 'edges', data: {id: 'e5', name: '喜欢', source: '李俊杰', target: '吃饭'}, classes: 'relationA'},
-          {group: 'edges', data: {id: 'e6', name: '拥有', source: '南京大学', target: '野猪'}, classes: 'relationA'},
-          {group: 'edges', data: {id: 'e7', name: '喜欢', source: '野猪', target: '打呼噜'}, classes: 'relationA'},
-          {group: 'edges', data: {id: 'e8', name: '是', source: '野猪', target: '南大卷王'}, classes: 'relationA'},
+          {group: 'nodes', data: {'id': '1', 'name': '欢迎使用风险查询系统',}, classes: 'one'},
+          {group: 'nodes', data: {'id': '2', 'name': '第八组',}, classes: 'Company', },
+          {group: 'nodes', data: {'id': '4', 'name': '张许妍',}, classes: 'DGJ',},
+          {group: 'nodes', data: {'id': '5', 'name': '冯泊涓',}, classes: 'DGJ',},
+          {group: 'nodes', data: {'id': '6', 'name': '金宇航',}, classes: 'DGJ',},
+          {group: 'nodes', data: {'id': '7', 'name': '吴昊宇',}, classes: 'DGJ',},
+          {group: 'nodes', data: {'id': '8', 'name': '周瑾瑜',}, classes: 'DGJ',},
+          {group: 'edges', data: {id: '3', name: '开发', source: '2', target: '1'}, classes: 'HoldingRelation'},
+          {group: 'edges', data: {id: '9', name: '前端', source: '4', target: '2'}, classes: 'HoldingRelation'},
+          {group: 'edges', data: {id: '10', name: '后端', source: '5', target: '2'}, classes: 'HoldingRelation'},
+          {group: 'edges', data: {id: '11', name: '爬虫', source: '6', target: '2'}, classes: 'HoldingRelation'},
+          {group: 'edges', data: {id: '12', name: '清洗', source: '7', target: '2'}, classes: 'HoldingRelation'},
+          {group: 'edges', data: {id: '13', name: '爬虫', source: '8', target: '2'}, classes: 'HoldingRelation'},
+
         ]);
+        this.$refs['ref_CJS'].refresh({name: 'cola'})
       },
       //调整页面大小
       resize() {
